@@ -180,16 +180,33 @@ char* generateRandomNumber()
 
 void updatePlayerPos()
 {
-	char key = getch();
-	if (key == 'a')
+	while (kbhit())
 	{
-		play.xPos -= 1;
-	}
-	if (key == 'd')
-	{
-		play.xPos += 1;
+		char key = getch();
+		if (key == 'a')
+		{
+			play.xPos -= 1;
+		}
+		if (key == 'd')
+		{
+			play.xPos += 1;
+		}
 	}
 }
+
+bool checkCollision()
+{
+	int i;
+	for (i = 0; i < 5; i++)
+	{
+		if (obstacles[i].xPos == play.xPos && obstacles[i].yPos == play.yPos);
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 
 
 
@@ -199,18 +216,29 @@ void generateObstacles()
 	for (i = 0; i < 4; i++)
 	{
 		obstacles[i].value = generateRandomNumber();
-		obstacles[i].xPos = rand() % 51 + 20;
+		obstacles[i].xPos = rand() % 50 + 21;
 		obstacles[i].yPos = rand() % 21 + 5;
 		obstacles[i].isCorrectAnswer = false;
 
 	}
 
 	obstacles[4].value = answer;
-	obstacles[4].xPos = rand() % 51 + 20;
+	obstacles[4].xPos = rand() % 50 + 21;
 	obstacles[4].yPos = rand() % 21 + 5;
 	obstacles[4].isCorrectAnswer = true;
 }
 
+bool checkWin()
+{
+	int i;
+	for (i = 0; i < 5; i++)
+	{
+		if (obstacles[i].xPos == play.xPos && obstacles[i].yPos == play.yPos)
+		{
+			return obstacles[i].isCorrectAnswer;
+		}
+	}
+}
 
 int main(int argc, char *argv[])
 {
@@ -226,26 +254,32 @@ int main(int argc, char *argv[])
 	play.yPos = 0;
 
 	bool gameOn = true;
-	while (gameOn)
+	int i;
+	for (i = 0; i < 25; i++)
 	{
-		int i;
-		for (i = 0; i < 25; i++)
+		system("cls");
+		play.yPos = i;
+		renderScreen();
+		updatePlayerPos();
+		if (checkCollision())
 		{
-			system("cls");
-			play.yPos = i;
-			renderScreen();
-			char key = getch();
-			if (key == 'a')
-			{
-				play.xPos -= 1;
-			}
-			if (key == 'd')
-			{
-				play.xPos += 1;
-			}
-			Sleep(100);
+			break;
 		}
+		Sleep(500);
 	}
+	if (checkWin())
+	{
+		system("cls");
+		printf("YOU WIN!");
+	}
+	else 
+	{
+		system("cls");
+		printf("YOU LOSE!");
+		
+	}
+
+	
 
 
 	// int i;
