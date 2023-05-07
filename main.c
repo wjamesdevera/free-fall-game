@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <stdbool.h>
 #include <string.h>	
+#include <time.h>
 
 typedef struct {
 	char* value;
@@ -27,6 +28,7 @@ int playerScore = 0;
 char *questions[100];
 char *question;
 char *answer;
+obstacle obstacles[5];
 
 void gotoxy(int x, int y) 
 {
@@ -63,9 +65,20 @@ void renderGameScore()
 /**
  * render game question on the screen
 */
-void renderGameQuestion() {
+void renderGameQuestion() 
+{
 	gotoxy(2, 3);
 	printf("%s", question);
+}
+
+void renderObstacles() 
+{
+	int i;
+	for (i = 0; i < 5; i++)
+	{
+		gotoxy(obstacles[i].xPos, obstacles[i].yPos);
+		printf("%s", obstacles[i].value);
+	}
 }
 
 
@@ -149,23 +162,26 @@ char* generateRandomNumber()
 	return randomNumbers[randomIndex];
 }
 
-obstacle obstacles[5];
+
+
 void generateObstacles() 
 {
 	srand(time(NULL));
 	int i = 0;
+	int xPos;
+	int yPos;
 	for (i = 0; i < 4; i++)
 	{
-		int xPos = rand() % ((20 + BOARDWIDTH) - 20 + 1) + 20;
-		int yPos = rand() % (BOARDHEIGHT - 5) + 5;
+		xPos = rand() % 51 + 20;
+		yPos = rand() % 21 + 5;
 		obstacles[i].value = generateRandomNumber();
 		obstacles[i].xPos = xPos;
 		obstacles[i].yPos = yPos;
 		obstacles[i].isCorrectAnswer = false;
 	}
 
-	int xPos = rand() % ((20 + BOARDWIDTH) - 20 + 1) + 20;
-	int yPos = rand() % (BOARDHEIGHT - 5) + 5;
+	xPos = rand() % 51 + 20;
+	yPos = rand() % 21 + 5;
 	obstacles[4].value = answer;
 	obstacles[4].xPos = xPos;
 	obstacles[4].yPos = yPos;
@@ -175,28 +191,29 @@ void generateObstacles()
 
 int main(int argc, char *argv[])
 {
-	// fetchGameQuestions();
-	// generateRandomQuesiton();
+	fetchGameQuestions();
+	generateRandomQuesiton();
+	fetchRandomNumbers();
+	generateRandomNumber();
+	generateObstacles();
 	// printf("\e[?25l"); // Makes cursor invisible
 	// bool gameOn = true;
-	// // while (gameOn)
-	// // {
+	// while (gameOn)
+	// {
 	// 	system("cls");
     // 	renderBorders();
 	// 	renderGameScore();
 	// 	renderGameQuestion();
+	// 	renderObstacles();
 	// }
-	// printf("\e[?25h"); // Makes cursor visible
-	fetchRandomNumbers();
-	generateObstacles();
 	int i;
-	for (i = 0; i < 5; i++) 
+	for (i = 0; i < 5; i++)
 	{
-		printf("\nObstacle: %d\n", i);
+		printf("Obstacle: %d\n", i);
 		printf("Value: %s\n", obstacles[i].value);
-		printf("xPos: %d\n", obstacles[i].xPos);
-		printf("yPos: %d\n", obstacles[i].yPos);
-		printf("isCorrectAnswer: %s\n", obstacles[i].isCorrectAnswer ? "true" : "false");
+		printf("x: %d\n", obstacles[i].xPos);
+		printf("y: %d\n", obstacles[i].yPos);
 	}
+	printf("\e[?25h"); // Makes cursor visible
     return 0;
 }
