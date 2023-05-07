@@ -29,6 +29,7 @@ char *questions[100];
 char *question;
 char *answer;
 obstacle obstacles[5];
+player play;
 
 void gotoxy(int x, int y) 
 {
@@ -79,6 +80,21 @@ void renderObstacles()
 		gotoxy(obstacles[i].xPos, obstacles[i].yPos);
 		printf("%s", obstacles[i].value);
 	}
+}
+
+void renderPlayer()
+{
+	gotoxy(play.xPos, play.yPos);
+	printf("%c", play.profile);
+}
+
+void renderScreen()
+{
+	renderBorders();
+	renderGameQuestion();
+	renderGameScore();
+	renderObstacles();
+	renderPlayer();
 }
 
 
@@ -147,7 +163,7 @@ void fetchRandomNumbers()
 	fclose(file);
 }
 
-void generateRandomQuesiton() 
+void generateRandomQuestion() 
 {
 	srand(time(NULL));
 	int randomIndex = rand() % lineCount;
@@ -157,7 +173,6 @@ void generateRandomQuesiton()
 
 char* generateRandomNumber()
 {
-	srand(time(NULL));
 	int randomIndex = rand() % randomNumberCount;
 	return randomNumbers[randomIndex];
 }
@@ -166,54 +181,83 @@ char* generateRandomNumber()
 
 void generateObstacles() 
 {
-	srand(time(NULL));
-	int i = 0;
-	int xPos;
-	int yPos;
+	int i;
 	for (i = 0; i < 4; i++)
 	{
-		xPos = rand() % 51 + 20;
-		yPos = rand() % 21 + 5;
 		obstacles[i].value = generateRandomNumber();
-		obstacles[i].xPos = xPos;
-		obstacles[i].yPos = yPos;
+		obstacles[i].xPos = rand() % 51 + 20;
+		obstacles[i].yPos = rand() % 21 + 5;
 		obstacles[i].isCorrectAnswer = false;
-	}
 
-	xPos = rand() % 51 + 20;
-	yPos = rand() % 21 + 5;
+	}
+	// obstacles[0].value = generateRandomNumber();
+	// obstacles[0].xPos = randomXPos();
+	// obstacles[0].yPos = rand() % 21 + 5;
+	// obstacles[0].isCorrectAnswer = false;
+
+	// obstacles[1].value = generateRandomNumber();
+	// obstacles[1].xPos = randomXPos();
+	// obstacles[1].yPos = rand() % 21 + 5;
+	// obstacles[1].isCorrectAnswer = false;
+
+	// obstacles[2].value = generateRandomNumber();
+	// obstacles[2].xPos = randomXPos();
+	// obstacles[2].yPos = rand() % 21 + 5;
+	// obstacles[2].isCorrectAnswer = false;
+
+	// obstacles[3].value = generateRandomNumber();
+	// obstacles[3].xPos = randomXPos();
+	// obstacles[3].yPos = rand() % 21 + 5;
+	// obstacles[3].isCorrectAnswer = false;
+
 	obstacles[4].value = answer;
-	obstacles[4].xPos = xPos;
-	obstacles[4].yPos = yPos;
+	obstacles[4].xPos = rand() % 51 + 20;
+	obstacles[4].yPos = rand() % 21 + 5;
 	obstacles[4].isCorrectAnswer = true;
 }
 
 
 int main(int argc, char *argv[])
 {
+	srand(time(NULL));
 	fetchGameQuestions();
-	generateRandomQuesiton();
+	generateRandomQuestion();
 	fetchRandomNumbers();
 	generateRandomNumber();
 	generateObstacles();
-	// printf("\e[?25l"); // Makes cursor invisible
+	printf("\e[?25l"); // Makes cursor invisible
+	play.profile = '#';
+	play.xPos = 26;
+	play.yPos = 0;
+
 	// bool gameOn = true;
 	// while (gameOn)
 	// {
-	// 	system("cls");
-    // 	renderBorders();
-	// 	renderGameScore();
-	// 	renderGameQuestion();
-	// 	renderObstacles();
+		system("cls");
+    	renderBorders();
+		renderGameScore();
+		renderGameQuestion();
+		renderObstacles();
 	// }
+
 	int i;
-	for (i = 0; i < 5; i++)
+	for (i = 0; i < 25; i++)
 	{
-		printf("Obstacle: %d\n", i);
-		printf("Value: %s\n", obstacles[i].value);
-		printf("x: %d\n", obstacles[i].xPos);
-		printf("y: %d\n", obstacles[i].yPos);
+		system("cls");
+		play.yPos = i;
+		renderScreen();
+		Sleep(200);
 	}
+
+	// int i;
+	// for (i = 0; i < 5; i++)
+	// {
+	// 	printf("Obstacle: %d\n", i);
+	// 	printf("Value: %s\n", obstacles[i].value);
+	// 	printf("x: %d\n", obstacles[i].xPos);
+	// 	printf("y: %d\n", obstacles[i].yPos);
+	// }
 	printf("\e[?25h"); // Makes cursor visible
+	gotoxy(25, 50);
     return 0;
 }
