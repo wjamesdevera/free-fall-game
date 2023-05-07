@@ -55,7 +55,8 @@ void renderGameScore()
 }
 
 void renderGameQuestion() {
-	
+	gotoxy(2, 3);
+	printf("%s", "1+1");
 }
 
 
@@ -63,11 +64,13 @@ void renderGameQuestion() {
 #define MAX_LENGTH 100
 char *questions[MAX_LINES];
 int lineCount = 0; // MAX NUMBER OF LINES IN THE TEXT FILE
+char *question;
+char *answer;
 
 /**
  * Grab questions from a csv file or can be a text file
 */
-void fetchGameQuestions() 
+int fetchGameQuestions() 
 {
 	FILE *questionFile;
 	char buffer[MAX_LENGTH];
@@ -90,8 +93,17 @@ void fetchGameQuestions()
 		strcpy(questions[lineCount], buffer);
 		lineCount++;
 	}
+	
+	fclose(questionFile);
 }
 
+void generateRandomQuesiton() 
+{
+	srand(time(NULL));
+	int randomIndex = rand() % lineCount;
+	question = strtok(questions[randomIndex], ",");
+	answer =  strtok(NULL, ",");
+}
 
 
 int main(int argc, char *argv[])
@@ -106,10 +118,8 @@ int main(int argc, char *argv[])
 	// printf("\e[?25h"); // Makes cursor visible
 
 	fetchGameQuestions();
-	int i;
-	for (i = 0; i < lineCount; i++)
-	{
-		printf("%s\n", questions[i]);
-	}
+	generateRandomQuesiton();
+	printf("%s\n", question);
+	printf("%s\n", answer);
     return 0;
 }
