@@ -194,6 +194,7 @@ void updatePlayerPos()
 	}
 }
 
+// TODO: NEED FIXING
 bool checkCollision()
 {
 	int i;
@@ -228,6 +229,7 @@ void generateObstacles()
 	obstacles[4].isCorrectAnswer = true;
 }
 
+// TODO: NEED FIXING
 bool checkWin()
 {
 	int i;
