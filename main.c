@@ -5,7 +5,7 @@
 #include <string.h>	
 
 typedef struct {
-	int value;
+	char* value;
 	int xPos;
 	int yPos;
 	bool isCorrectAnswer;
@@ -103,6 +103,9 @@ void fetchGameQuestions()
 	fclose(questionFile);
 }
 
+/**
+ * fetches random numbers from a txt file and stores them in an array
+*/
 int randomNumberCount = 0;
 char *randomNumbers[MAX_LINES];
 void fetchRandomNumbers()
@@ -146,6 +149,29 @@ char* generateRandomNumber()
 	return randomNumbers[randomIndex];
 }
 
+obstacle obstacles[5];
+void generateObstacles() 
+{
+	srand(time(NULL));
+	int i = 0;
+	for (i = 0; i < 4; i++)
+	{
+		int xPos = rand() % ((20 + BOARDWIDTH) - 20 + 1) + 20;
+		int yPos = rand() % (BOARDHEIGHT - 5) + 5;
+		obstacles[i].value = generateRandomNumber();
+		obstacles[i].xPos = xPos;
+		obstacles[i].yPos = yPos;
+		obstacles[i].isCorrectAnswer = false;
+	}
+
+	int xPos = rand() % ((20 + BOARDWIDTH) - 20 + 1) + 20;
+	int yPos = rand() % (BOARDHEIGHT - 5) + 5;
+	obstacles[4].value = answer;
+	obstacles[4].xPos = xPos;
+	obstacles[4].yPos = yPos;
+	obstacles[4].isCorrectAnswer = true;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -162,7 +188,15 @@ int main(int argc, char *argv[])
 	// }
 	// printf("\e[?25h"); // Makes cursor visible
 	fetchRandomNumbers();
-	char *num = generateRandomNumber();
-	printf("%s\n", num);
+	generateObstacles();
+	int i;
+	for (i = 0; i < 5; i++) 
+	{
+		printf("\nObstacle: %d\n", i);
+		printf("Value: %s\n", obstacles[i].value);
+		printf("xPos: %d\n", obstacles[i].xPos);
+		printf("yPos: %d\n", obstacles[i].yPos);
+		printf("isCorrectAnswer: %s\n", obstacles[i].isCorrectAnswer ? "true" : "false");
+	}
     return 0;
 }
