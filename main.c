@@ -12,6 +12,7 @@ typedef struct {
 } obstacle;
 
 typedef struct {
+	char profile;
 	int xPos;
 	int yPos;
 } player;
@@ -24,6 +25,8 @@ int BOARDYPOS = 0;
 int playerScore = 0;
 
 char *questions[100];
+char *question;
+char *answer;
 
 void gotoxy(int x, int y) 
 {
@@ -48,15 +51,21 @@ void renderBorders()
 	}
 }
 
+/**
+ * render player score on the screen
+*/
 void renderGameScore()
 {
 	gotoxy(2, 2);
 	printf("Score: %d", playerScore);
 }
 
+/**
+ * render game question on the screen
+*/
 void renderGameQuestion() {
 	gotoxy(2, 3);
-	printf("%s", "1+1");
+	printf("%s", question);
 }
 
 
@@ -64,13 +73,10 @@ void renderGameQuestion() {
 #define MAX_LENGTH 100
 char *questions[MAX_LINES];
 int lineCount = 0; // MAX NUMBER OF LINES IN THE TEXT FILE
-char *question;
-char *answer;
-
 /**
  * Grab questions from a csv file or can be a text file
 */
-int fetchGameQuestions() 
+void fetchGameQuestions() 
 {
 	FILE *questionFile;
 	char buffer[MAX_LENGTH];
@@ -79,7 +85,7 @@ int fetchGameQuestions()
 	if (questionFile == NULL)
 	{
 		printf("Error: could not open file. \n");
-		return 1;
+		return;
 	}
 
 	while (fgets(buffer, MAX_LENGTH, questionFile) != NULL && lineCount < MAX_LINES)
@@ -97,6 +103,34 @@ int fetchGameQuestions()
 	fclose(questionFile);
 }
 
+int randomNumberCount = 0;
+char *randomNumbers[MAX_LINES];
+void fetchRandomNumbers()
+{
+	FILE *file;
+	char buffer[MAX_LENGTH];
+	file = fopen("./game_qa/random_numbers.txt", "r");
+	
+	if (file == NULL)
+	{
+		printf("Error: could not open random numbers file\n");
+		return;
+	}
+
+	while (fgets(buffer, MAX_LENGTH, file) != NULL && randomNumberCount < MAX_LINES)
+	{
+		int len = strlen(buffer);
+		if (len > 0 && buffer[len-1] == '\n')
+		{
+			buffer[len-1] = '\0'; // remove newline character
+		}
+		randomNumbers[randomNumberCount] = (char*) malloc(sizeof(char) * (len+1));
+		strcpy(randomNumbers[randomNumberCount], buffer);
+		randomNumberCount++;
+	}
+	fclose(file);
+}
+
 void generateRandomQuesiton() 
 {
 	srand(time(NULL));
@@ -105,21 +139,30 @@ void generateRandomQuesiton()
 	answer =  strtok(NULL, ",");
 }
 
+char* generateRandomNumber()
+{
+	srand(time(NULL));
+	int randomIndex = rand() % randomNumberCount;
+	return randomNumbers[randomIndex];
+}
+
 
 int main(int argc, char *argv[])
 {
+	// fetchGameQuestions();
+	// generateRandomQuesiton();
 	// printf("\e[?25l"); // Makes cursor invisible
 	// bool gameOn = true;
-	// while (gameOn)
-	// {
+	// // while (gameOn)
+	// // {
 	// 	system("cls");
     // 	renderBorders();
+	// 	renderGameScore();
+	// 	renderGameQuestion();
 	// }
 	// printf("\e[?25h"); // Makes cursor visible
-
-	fetchGameQuestions();
-	generateRandomQuesiton();
-	printf("%s\n", question);
-	printf("%s\n", answer);
+	fetchRandomNumbers();
+	char *num = generateRandomNumber();
+	printf("%s\n", num);
     return 0;
 }
