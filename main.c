@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <string.h>	
 #include <time.h>
+#include <conio.h>
 
 typedef struct {
 	char* value;
@@ -177,6 +178,19 @@ char* generateRandomNumber()
 	return randomNumbers[randomIndex];
 }
 
+void updatePlayerPos()
+{
+	char key = getch();
+	if (key == 'a')
+	{
+		play.xPos -= 1;
+	}
+	if (key == 'd')
+	{
+		play.xPos += 1;
+	}
+}
+
 
 
 void generateObstacles() 
@@ -190,25 +204,6 @@ void generateObstacles()
 		obstacles[i].isCorrectAnswer = false;
 
 	}
-	// obstacles[0].value = generateRandomNumber();
-	// obstacles[0].xPos = randomXPos();
-	// obstacles[0].yPos = rand() % 21 + 5;
-	// obstacles[0].isCorrectAnswer = false;
-
-	// obstacles[1].value = generateRandomNumber();
-	// obstacles[1].xPos = randomXPos();
-	// obstacles[1].yPos = rand() % 21 + 5;
-	// obstacles[1].isCorrectAnswer = false;
-
-	// obstacles[2].value = generateRandomNumber();
-	// obstacles[2].xPos = randomXPos();
-	// obstacles[2].yPos = rand() % 21 + 5;
-	// obstacles[2].isCorrectAnswer = false;
-
-	// obstacles[3].value = generateRandomNumber();
-	// obstacles[3].xPos = randomXPos();
-	// obstacles[3].yPos = rand() % 21 + 5;
-	// obstacles[3].isCorrectAnswer = false;
 
 	obstacles[4].value = answer;
 	obstacles[4].xPos = rand() % 51 + 20;
@@ -230,24 +225,28 @@ int main(int argc, char *argv[])
 	play.xPos = 26;
 	play.yPos = 0;
 
-	// bool gameOn = true;
-	// while (gameOn)
-	// {
-		system("cls");
-    	renderBorders();
-		renderGameScore();
-		renderGameQuestion();
-		renderObstacles();
-	// }
-
-	int i;
-	for (i = 0; i < 25; i++)
+	bool gameOn = true;
+	while (gameOn)
 	{
-		system("cls");
-		play.yPos = i;
-		renderScreen();
-		Sleep(200);
+		int i;
+		for (i = 0; i < 25; i++)
+		{
+			system("cls");
+			play.yPos = i;
+			renderScreen();
+			char key = getch();
+			if (key == 'a')
+			{
+				play.xPos -= 1;
+			}
+			if (key == 'd')
+			{
+				play.xPos += 1;
+			}
+			Sleep(100);
+		}
 	}
+
 
 	// int i;
 	// for (i = 0; i < 5; i++)
